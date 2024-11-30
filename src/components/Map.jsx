@@ -1,15 +1,17 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "./Map.module.css";
-import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { useEffect, useState } from "react";
 import { useCities } from "../contexts/CitiesContext";
 import { useGeolocation } from "../hooks/useGeolocation";
 import Button from "./Button";
+import { useUrlPosition } from "../hooks/useUrlPosition";
 
 function Map() {
   const { cities } = useCities();
-  const [mapPosition, setMapPosition] = useState([40, 0]); // Default fallback position
-  const [searchParams] = useSearchParams();
+
+  const [mapPosition, setMapPosition] = useState([31.560047458720362, 74.33555841026865]); // Default fallback position
+
   const {
     isLoading: isLoadingPosition,
     position: geolocationPosition,
@@ -17,8 +19,7 @@ function Map() {
   } = useGeolocation();
 
   // Parse lat/lng from search params
-  const mapLat = parseFloat(searchParams.get("lat"));
-  const mapLng = parseFloat(searchParams.get("lng"));
+  const [mapLat, mapLng] = useUrlPosition();
 
   // Update position from search params
   useEffect(() => {
@@ -40,18 +41,21 @@ function Map() {
       <Button type='position' onClick={getPosition}>
         {isLoadingPosition ? "Loading..." : "Use your position"}
       </Button>
-      <MapContainer center={mapPosition} zoom={8} scrollWheelZoom={true} className={styles.map}>
+      <MapContainer center={mapPosition} zoom={9} scrollWheelZoom={true} className={styles.map}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url='https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'
         />
-        {cities.map((city) => (
-          <Marker position={[city.position.lat, city.position.lng]} key={city.id}>
-            <Popup>
-              <span>{city.cityName}</span>
-            </Popup>
-          </Marker>
-        ))}
+        {cities.map((city) =>
+          city.position?.lat && city.position?.lng ? (
+            <Marker
+              key={city.id}
+              position={[city.position.lat, city.position.lng]}
+              // Other marker props
+            />
+          ) : null
+        )}
+
         <ChangeCenter position={mapPosition} />
         <DetectClick />
       </MapContainer>

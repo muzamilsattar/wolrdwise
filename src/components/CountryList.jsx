@@ -6,15 +6,20 @@ import Spinner from "./Spinner";
 
 function CountryList() {
   const { cities, isLoading } = useCities();
+
   if (isLoading) {
     return <Spinner />;
   }
-  if (!cities.length) return <Message message='start adding cities' />;
+
+  if (!cities.length) return <Message message='Start adding cities' />;
+
   const countries = cities.reduce((arr, city) => {
-    if (!arr.map((el) => el.country).includes(city.country))
+    if (!arr.some((el) => el.country === city.country)) {
       return [...arr, { country: city.country, emoji: city.emoji }];
-    else arr;
+    }
+    return arr; // Always return the accumulator
   }, []);
+
   return (
     <ul className={styles.countryList}>
       {countries.map((country) => (
