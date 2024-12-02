@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-const BASE_URL = "http://localhost:9090";
+const WEB_URL = "http://localhost:9090";
+
 const CitiesContext = createContext();
 
 function CitiesProvider({ children }) {
@@ -12,7 +13,7 @@ function CitiesProvider({ children }) {
     async function fetchCities() {
       try {
         setIsLoading(true);
-        const response = await fetch(`${BASE_URL}/cities`);
+        const response = await fetch(`${WEB_URL}/cities`);
         const data = await response.json();
         setCities(data);
       } catch (error) {
@@ -27,7 +28,7 @@ function CitiesProvider({ children }) {
   async function getCity(id) {
     try {
       setIsLoading(true);
-      const response = await fetch(`${BASE_URL}/cities/${id}`);
+      const response = await fetch(`${WEB_URL}/cities/${id}`);
       const data = await response.json();
       setCurrentCity(data);
     } catch (error) {
@@ -39,7 +40,7 @@ function CitiesProvider({ children }) {
   async function createCity(newCity) {
     try {
       setIsLoading(true);
-      const response = await fetch(`${BASE_URL}/cities`, {
+      const response = await fetch(`${WEB_URL}/cities`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -58,7 +59,7 @@ function CitiesProvider({ children }) {
   async function deleteCity(id) {
     try {
       setIsLoading(true);
-      await fetch(`${BASE_URL}/cities/${id}`, {
+      await fetch(`${WEB_URL}/cities/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json"
