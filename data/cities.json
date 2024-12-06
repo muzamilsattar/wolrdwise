@@ -1,0 +1,64 @@
+{
+  "cities": [
+    {
+      "id": "2ae9",
+      "cityName": "Dera Ismail Khan",
+      "country": "Pakistan",
+      "emoji": "🇵🇰",
+      "date": "2024-11-30T15:36:14.519Z",
+      "notes": "",
+      "position": {
+        "lat": 31.80799825837707,
+        "lng": 70.88928222656251
+      }
+    },
+    {
+      "id": "e948",
+      "cityName": "Dera Ismail Khan",
+      "country": "Pakistan",
+      "emoji": "🇵🇰",
+      "date": "2024-11-30T15:36:19.998Z",
+      "notes": "i will gooo",
+      "position": {
+        "lat": 31.910979931205194,
+        "lng": 70.88928222656251
+      }
+    },
+    {
+      "id": "1e21",
+      "cityName": "Kamoke",
+      "country": "Pakistan",
+      "emoji": "🇵🇰",
+      "date": "2024-11-30T16:38:48.805Z",
+      "notes": "",
+      "position": {
+        "lat": 31.942991803825343,
+        "lng": 74.23736572265626
+      }
+    },
+    {
+      "id": "60bb",
+      "cityName": "Muridke",
+      "country": "Pakistan",
+      "emoji": "🇵🇰",
+      "date": "2024-11-30T16:50:59.174Z",
+      "notes": "",
+      "position": {
+        "lat": 31.775134028700336,
+        "lng": 74.27856445312501
+      }
+    },
+    {
+      "id": "8958",
+      "cityName": "Faisalabad",
+      "country": "Pakistan",
+      "emoji": "🇵🇰",
+      "date": "2024-12-06T11:11:55.559Z",
+      "notes": "",
+      "position": {
+        "lat": 31.39399662021206,
+        "lng": 73.08105468750001
+      }
+    }
+  ]
+}
