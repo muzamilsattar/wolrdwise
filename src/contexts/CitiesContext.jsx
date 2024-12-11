@@ -1,23 +1,30 @@
 import { createContext, useContext, useEffect, useState } from "react";
-
-const WEB_URL = "http://localhost:9090";
+// Import Supabase client
+import { supabase } from "../supabase/supabase";
+// console.log(supabase);
 
 const CitiesContext = createContext();
 
 function CitiesProvider({ children }) {
   const [cities, setCities] = useState([]);
-  // const [country, setCountry] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentCity, setCurrentCity] = useState({});
+
+  // Fetch all cities from Supabase
   useEffect(() => {
     async function fetchCities() {
       try {
         setIsLoading(true);
-        const response = await fetch(`${WEB_URL}/cities`);
-        const data = await response.json();
+        const { data, error } = await supabase
+          .from("cities") // Supabase table name
+          .select("*"); // Select all columns from the 'cities' table
+        console.log(data);
+
+        if (error) throw error;
+
         setCities(data);
       } catch (error) {
-        alert("something went wrong", error);
+        alert("Something went wrong fetching cities: " + error.message);
       } finally {
         setIsLoading(false);
       }
@@ -25,53 +32,71 @@ function CitiesProvider({ children }) {
     fetchCities();
   }, []);
 
+  // Get a single city by ID
   async function getCity(id) {
     try {
       setIsLoading(true);
-      const response = await fetch(`${WEB_URL}/cities/${id}`);
-      const data = await response.json();
+      const { data, error } = await supabase
+        .from("cities") // Supabase table name
+        .select("*")
+        .eq("id", id) // Use `.eq` to filter by ID
+        .single(); // Get only one result
+
+      if (error) throw error;
+
       setCurrentCity(data);
     } catch (error) {
-      alert("something went wrong", error);
+      alert("Something went wrong fetching the city: " + error.message);
     } finally {
       setIsLoading(false);
     }
   }
+
+  // Create a new city in Supabase
   async function createCity(newCity) {
     try {
       setIsLoading(true);
-      const response = await fetch(`${WEB_URL}/cities`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(newCity)
-      });
-      const data = await response.json();
-      console.log(data);
-      setCities((cities) => [...cities, data]);
+      const { data, error } = await supabase
+        .from("cities") // Supabase table name
+        .insert([newCity])
+        .select("*"); // Insert new city
+
+      if (error) throw error;
+
+      setCities((cities) => [...cities, ...data]);
+      // setCities((cities) => {
+      //   if (data && data[0]) {
+      //     return [...cities, data[0]];
+      //   }
+      //   return cities; // Return the current cities array if data is invalid
+      // });
+      console.log(cities);
     } catch (error) {
-      alert("something went wrong creating the new city", error);
+      alert("Something went wrong creating the new city: " + error.message);
     } finally {
       setIsLoading(false);
     }
   }
+
+  // Delete a city by ID
   async function deleteCity(id) {
     try {
       setIsLoading(true);
-      await fetch(`${WEB_URL}/cities/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
+      const { error } = await supabase
+        .from("cities") // Supabase table name
+        .delete()
+        .eq("id", id); // Use `.eq` to filter by ID
+
+      if (error) throw error;
+
       setCities((cities) => cities.filter((city) => city.id !== id));
     } catch (error) {
-      alert("something went wrong Deleting the city", error);
+      alert("Something went wrong deleting the city: " + error.message);
     } finally {
       setIsLoading(false);
     }
   }
+
   return (
     <CitiesContext.Provider
       value={{
@@ -87,6 +112,7 @@ function CitiesProvider({ children }) {
     </CitiesContext.Provider>
   );
 }
+
 function useCities() {
   const context = useContext(CitiesContext);
   if (!context) {
@@ -94,4 +120,5 @@ function useCities() {
   }
   return context;
 }
+
 export { CitiesProvider, useCities };
